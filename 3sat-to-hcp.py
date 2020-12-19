@@ -1,4 +1,3 @@
-# from graphviz import Digraph
 import sys
 import load3sat
 print(sys.version)
@@ -19,15 +18,6 @@ def not_var(literal):
     else:
         return "-" + literal
 
-# # to draw graph set as adjcency list
-# def draw_graph(digraph):
-#     dg = Digraph()
-
-#     for in_node in digraph:
-#         for out_nodes in digraph[in_node]:
-#             dg.edge(str(in_node), str(out_nodes))
-
-#     dg.view()
 
 # reduce 3SAT to Hamilatonian Graph
 # we will present graph as an adjacency list and edge list
@@ -43,6 +33,7 @@ def cnf_to_hamiltonian_cycle(cnf_formula):
         for j in range(1,m+1):
             new_vert = 'P'+str(i)+str(j)
             hcgraph.adj_list[new_vert] = []
+    
     # for a given i, connect all Pi,j both ways, sequentially
     # connect Pi,1 to Pi+1,1 & Pi+1, m
     # connect Pi,m to Pi+1,m & Pi+1, 1
@@ -105,7 +96,9 @@ def cnf_to_hamiltonian_cycle(cnf_formula):
     hcgraph.adj_list['P' + str(n) + '1'].append('t')
     hcgraph.adj_list['P' + str(n) + str(2 * cnf_formula.vcount[str(n)])].append('t')
 
-    # create edge_list
+    # create edge_list but first rename the vertices to be numeric since the HCP file format expects this
+    ### we could have made the intial reductions numeric above, but I prefer the descriptive names
+    ### they help analyse the reduction more easily and will be better labels when we graph the HCP
     num_verts = 0
     oldkeys = []
     for key in hcgraph.adj_list.keys():
@@ -114,7 +107,8 @@ def cnf_to_hamiltonian_cycle(cnf_formula):
         oldkeys.append(key)
 
     hcgraph.dimension = num_verts
-
+    
+    # for debugging the reduction
     if show_descriptive_mapping == 1:
         for key in hcgraph.adj_list:
             print(key, '=>', hcgraph.adj_list[key])
@@ -122,7 +116,8 @@ def cnf_to_hamiltonian_cycle(cnf_formula):
         for key in hcgraph.vmap:
             print(key, '=>', hcgraph.vmap[key])
         print()
-
+    
+    # rename the vertices to be numeric
     for key in oldkeys:
         tmpl = []
         for item in hcgraph.adj_list[key]:
@@ -130,7 +125,8 @@ def cnf_to_hamiltonian_cycle(cnf_formula):
         newkey = hcgraph.vmap[key]
         hcgraph.adj_list[newkey] = hcgraph.adj_list.pop(key)
         hcgraph.adj_list[newkey] = tmpl
-
+    
+    # create the edge list
     for key in hcgraph.adj_list:
         for val in hcgraph.adj_list[key]:
             hcgraph.edge_list.append([key,val])
@@ -156,7 +152,6 @@ def run_prog(filename="test.dimacs"):
     verts = list(formula.variables)
     verts.sort()
 
-    # npcl = np.array(formula.clauses)
     print("cnf => ", formula.nbvars, 'variables and', formula.nbclauses, 'clauses')
     print("variables =>", verts)
     print("var counts => ", formula.vcount)
@@ -165,6 +160,7 @@ def run_prog(filename="test.dimacs"):
     hg = cnf_to_hamiltonian_cycle(formula)
     for key in hg.adj_list:
         print(key, '=>', hg.adj_list[key])
+    
     # for key in hg.vmap:
     #     print(key, '=>', hg.vmap[key])
     # print(hg.edge_list)
@@ -173,11 +169,5 @@ def run_prog(filename="test.dimacs"):
     write_out_graph(hg, 'testo.hcp')
     return 0
 
-# run_prog()
-run_prog("testg.dimacs")
-# run_prog("test7.dimacs")
-# run_prog("test8.dimacs")
-# run_prog("unsat5.dimacs")
-# run_prog("unsat9.dimacs")
-# run_prog("unsat10.dimacs")
-# run_prog("5.dimacs")
+# run the test graph
+# run_prog("testg.dimacs")
