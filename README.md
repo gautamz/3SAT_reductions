@@ -1,6 +1,8 @@
 # 3SAT Reductions
-I plan to host code here for reductions from 3SAT to Hamiltonian Cycle, 3 Dimensional Matching, Set Cover, 3-Coloring, Subset Sum and Subset Product.
-Write now the repo has -
+This repo is meant to host code for reductions from 3SAT to Hamiltonian Cycle, 3 Dimensional Matching, Set Cover, 3-Coloring, Subset Sum and Subset Product.
+The code is not yet focussed on performance but doing the correct reductions, in line with the known algorithms.
+
+Right now the repo has -
 1) A file to load a 3SAT/3CNF instance stored in a .dimacs file
 2) Code for reducing 3CNF to Hamiltonian Cycle
 
@@ -11,4 +13,7 @@ Write now the repo has -
 4) 3SAT > Subset Product
 5) 3SAT > 3 Coloring
 6) 3SAT > Subset Sum
-7) Plotting the output of the reductions graphically, where possible.
+7) Plotting the output of the reductions graphically, where possible
+8) Improve code performance
+
+STRETCH) Write the reductions in Go, Lisp/Clojure and Zig.
